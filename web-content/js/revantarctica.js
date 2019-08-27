@@ -1,22 +1,38 @@
 let dbObject = {
-    name: '',
+    nombre: '',
     client:'',
     techTrack:''
 }
 
-document.getElementById('header').innerText = "YOUR TITLE GOES HERE";
+document.getElementById('header').innerText = "Revature Antarctica";
 
-document.getElementById('carousel-1').src = "YOURCLOUDFUNCTION FOR GETTING AN IMAGE" || "images/penguins.jpg"
-document.getElementById('carousel-2').src = "YOURCLOUDFUNCTION FOR GETTING AN IMAGE" || "images/iceburg.jpg"
-document.getElementById('carousel-3').src = "YOURCLOUDFUNCTION FOR GETTING AN IMAGE" || "images/antarcticamountain.jpg"
+//this assumes your cloud function will return a value named address with the address to an image, in a cloud storage bucket
+async function setUpImages(){
+    let images = []
+    images.push(document.getElementById('carousel-1'))
+    images.push(document.getElementById('carousel-2'))
+    images.push(document.getElementById('carousel-3'))
+    images.forEach(async (value, index)=>{
+        //index is the numbered image in the carousel if that matters to you
+        let response = await fetch("FUNCTION TO GET IMAGE HERE")
+        
+    if(response.status <200 || response.status > 299){
+        value.src = "images/penguins.jpg"
+    } else {
+        data =  await response.json()
+        value.src = data["WHATEVER YOU NAMED THE FIELD IN YOUR RETURN"]
+    }
+    })
+}
+setUpImages()
 
 document.getElementById('calc-label').innerText = "YOU CALC LABEL TEXT"
 
 document.getElementById('calc-input').type = 'text' || "YOUR INPUT TYPE, REPLACE TEXT"
 
-function calcSubmit(event){
+async function calcSubmit(event){
     event.preventDefault()
-    fetch("YOUR CALC CLOUD FUNCTION URL", {
+    let result = await fetch("YOUR CALC CLOUD FUNCTION URL", {
         method: 'POST',
         body: JSON.stringify(document.getElementById('calc-input').value)
     })
@@ -25,30 +41,24 @@ function calcSubmit(event){
     } else {
         document.getElementById('calc-input').value = ''
     }
-
+    let data = await result.json()
+    let div = document.getElementById('calc-container')
+    let display = document.createElement('p')
+    display.innerText = `Your Result is: ${data} `
+    div.appendChild(display)
 }
 
 
 
 async function buildTable (){
-    // let objectResponse = await fetch("YOUR CLOUD FUNCTION URL FOR GETTING DATA")
-    // if(objectResponse.status <200 || objectResponse.status >299){
-    //     let error =document.createElement('p')
-    //     error.innerText = "Fetch Failed"
-    //     document.getElementById('footer-table').appendChild(error)
-    // }else {
-        //let objectList = await objectResponse.json()
-        let objectList = [
-            {
-                name: 'Ryan',
-                client:'Google',
-                techTrack:'GCP'
-            },{
-                name: 'Felix',
-                client:'Amazon',
-                techTrack:'GCP'
-            }
-        ]
+    let objectResponse = await fetch("YOUR CLOUD FUNCTION URL FOR GETTING DATA")
+    if(objectResponse.status <200 || objectResponse.status >299){
+        let error =document.createElement('p')
+        error.innerText = "Fetch Failed"
+        document.getElementById('footer-table').appendChild(error)
+    }else {
+        let objectList = await objectResponse.json()
+       
         let headRow = document.createElement('tr')
         document.getElementById('object-table-head').appendChild(headRow)
         for(key in dbObject){
@@ -77,7 +87,7 @@ async function buildTable (){
             }
         })
         
-    //}
+    }
 }
 
 function buildForm(){
