@@ -127,7 +127,7 @@ function createObject(event){
         }
     }
     
-    fetch('YOUR CLOUD FUNCTION URL FOR CREATING A NEW OBJECT',{
+    fetch('https://us-central1-revature-antarctica.cloudfunctions.net/add-datastore-data',{
         method: 'POST',
         headers:{
             'Content-Type': 'application/json'
