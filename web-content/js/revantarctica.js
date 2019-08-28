@@ -1,10 +1,10 @@
 let dbObject = {
-    nombre: '',
+    name: '',
     client:'',
     techTrack:''
 }
 
-document.getElementById('header').innerText = "Revature Antarctica";
+document.getElementById('header').innerText = "Revature Antarctica!";
 
 //this assumes your cloud function will return a value named address with the address to an image, in a cloud storage bucket
 async function setUpImages(){
@@ -12,9 +12,10 @@ async function setUpImages(){
     images.push(document.getElementById('carousel-1'))
     images.push(document.getElementById('carousel-2'))
     images.push(document.getElementById('carousel-3'))
+    images.push(document.getElementById('carousel-4'))
     images.forEach(async (value, index)=>{
         //index is the numbered image in the carousel if that matters to you
-        let response = await fetch("https://us-central1-revature-antarctica.cloudfunctions.net/get-image1?image="+index)
+        let response = await fetch(`https://us-central1-revature-antarctica.cloudfunctions.net/get-image1?image=${index}`)
         
     if(response.status <200 || response.status > 299){
         value.src = "images/penguins.jpg"
@@ -51,7 +52,7 @@ async function calcSubmit(event){
 
 
 async function buildTable (){
-    let objectResponse = await fetch("YOUR CLOUD FUNCTION URL FOR GETTING DATA")
+    let objectResponse = await fetch("https://us-central1-revature-antarctica.cloudfunctions.net/get-datastore-data")
     if(objectResponse.status <200 || objectResponse.status >299){
         let error =document.createElement('p')
         error.innerText = "Fetch Failed"
@@ -128,6 +129,9 @@ function createObject(event){
     
     fetch('YOUR CLOUD FUNCTION URL FOR CREATING A NEW OBJECT',{
         method: 'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify(newObj)
     })
 }
