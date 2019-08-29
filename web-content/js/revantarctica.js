@@ -27,13 +27,13 @@ async function setUpImages(){
 }
 setUpImages()
 
-document.getElementById('calc-label').innerText = "YOU CALC LABEL TEXT"
+document.getElementById('calc-label').innerText = "Add to the Total"
 
-document.getElementById('calc-input').type = 'text' || "YOUR INPUT TYPE, REPLACE TEXT"
+document.getElementById('calc-input').type = 'number'
 
 async function calcSubmit(event){
     event.preventDefault()
-    let result = await fetch("YOUR CALC CLOUD FUNCTION URL", {
+    let result = await fetch("https://us-central1-revature-antarctica.cloudfunctions.net/calculate", {
         method: 'POST',
         body: JSON.stringify(document.getElementById('calc-input').value)
     })
@@ -45,7 +45,7 @@ async function calcSubmit(event){
     let data = await result.json()
     let div = document.getElementById('calc-container')
     let display = document.createElement('p')
-    display.innerText = `Your Result is: ${data} `
+    display.innerText = `Current Running ${data} `
     div.appendChild(display)
 }
 
@@ -136,7 +136,11 @@ function createObject(event){
     })
 }
 
-
+function deleteAll(event){
+    event.preventDefault()
+    console.log(event);
+    fetch('https://us-central1-revature-antarctica.cloudfunctions.net/delete-all')
+}
 
 buildTable()
 buildForm()
